@@ -1,0 +1,248 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Noto Sans JP', system-ui, sans-serif; background: oklch(98% 0.004 90); color: oklch(22% 0.02 260); -webkit-font-smoothing:antialiased; }
+    a { color: oklch(42% 0.13 262); text-decoration:none; } a:hover { color: oklch(34% 0.13 262); }
+    .app { display:flex; min-height:100vh; }
+    .sidebar { width:248px; flex-shrink:0; background: oklch(20% 0.03 262); color: oklch(90% 0.01 260); display:flex; flex-direction:column; padding:22px 14px 24px; }
+    .brand { display:flex; align-items:center; gap:10px; padding:2px 10px 26px; border-bottom:1px solid oklch(32% 0.03 262); margin-bottom:14px; }
+    .brand-mark { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg, oklch(72% 0.14 75), oklch(60% 0.16 45)); display:flex; align-items:center; justify-content:center; font-weight:900; color:white; font-size:14px; flex-shrink:0; }
+    .brand-text b { display:block; font-size:13px; font-weight:700; color:white; line-height:1.4; }
+    .brand-text span { font-size:10.5px; color:oklch(68% 0.02 260); }
+    .navsection { font-size:10.5px; font-weight:700; letter-spacing:.06em; color:oklch(52% 0.02 260); padding:16px 12px 6px; }
+    .navitem { display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:8px; font-size:13.5px; font-weight:500; color:oklch(78% 0.01 260); margin-bottom:2px; }
+    .navitem svg { width:17px; height:17px; flex-shrink:0; opacity:.8; }
+    .navitem.active { background:oklch(30% 0.055 262); color:white; }
+    .navitem.active svg { opacity:1; color: oklch(78% 0.12 75); }
+    .navfoot { margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px; border-top:1px solid oklch(32% 0.03 262); }
+    .navavatar { width:30px; height:30px; border-radius:50%; background:oklch(55% 0.03 262); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0; }
+    .navfoot-text b { display:block; font-size:12px; color:white; }
+    .navfoot-text span { font-size:10.5px; color:oklch(62% 0.02 260); }
+    .main { flex:1; min-width:0; display:flex; flex-direction:column; }
+    .topbar { height:72px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 32px; border-bottom:1px solid oklch(90% 0.006 90); background:oklch(100% 0 0); }
+    .pagetitle h1 { margin:0; font-size:18px; font-weight:700; }
+    .pagetitle span { font-size:12px; color:oklch(52% 0.015 260); }
+    .topbar-right { display:flex; align-items:center; gap:14px; }
+    .topbar-user { display:flex; align-items:center; gap:9px; padding-left:12px; border-left:1px solid oklch(90% 0.006 90); }
+    .topbar-avatar { width:32px; height:32px; border-radius:50%; background:oklch(42% 0.13 262); color:white; font-size:11.5px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .topbar-user b { display:block; font-size:12.5px; }
+    .topbar-user span { font-size:10.5px; color:oklch(52% 0.015 260); }
+    .content { padding:28px 32px 48px; flex:1; }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:16px; }
+    .toolbar-left { display:flex; align-items:center; gap:10px; flex:1; }
+    .searchbox { display:flex; align-items:center; gap:8px; background:white; border:1px solid oklch(88% 0.006 90); border-radius:9px; padding:9px 14px; width:280px; }
+    .searchbox svg { width:15px; height:15px; color:oklch(55% 0.015 260); flex-shrink:0; }
+    .searchbox span { font-size:12.5px; color:oklch(55% 0.015 260); }
+    .selectpill { display:flex; align-items:center; gap:8px; background:white; border:1px solid oklch(88% 0.006 90); border-radius:9px; padding:9px 14px; font-size:12.5px; font-weight:500; color:oklch(35% 0.02 260); }
+    .selectpill svg { width:13px; height:13px; }
+    .btn { display:inline-flex; align-items:center; gap:7px; padding:10px 16px; border-radius:9px; font-size:13px; font-weight:700; border:none; }
+    .btn svg { width:15px; height:15px; }
+    .btn.primary { background:oklch(42% 0.13 262); color:white; }
+    .card { background:white; border:1px solid oklch(91% 0.006 90); border-radius:12px; overflow:hidden; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; font-size:11.5px; font-weight:700; color:oklch(50% 0.015 260); padding:14px 16px; border-bottom:1px solid oklch(91% 0.006 90); background:oklch(98.5% 0.003 90); }
+    td { padding:14px 16px; font-size:13px; border-bottom:1px solid oklch(94% 0.004 90); vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    .cell-user { display:flex; align-items:center; gap:11px; }
+    .cell-avatar { width:34px; height:34px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; }
+    .cell-user b { display:block; font-size:13px; font-weight:600; }
+    .cell-user span { font-size:11.5px; color:oklch(52% 0.015 260); }
+    .num { font-variant-numeric:tabular-nums; font-weight:600; }
+    .rate-row { display:flex; flex-direction:column; gap:2px; font-size:12px; }
+    .rate-row b { font-weight:700; font-size:12.5px; }
+    .rate-row span { color:oklch(52% 0.015 260); }
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:100px; font-size:11.5px; font-weight:700; }
+    .badge.ok { background:oklch(94% 0.05 150); color:oklch(42% 0.11 150); }
+    .badge.pending { background:oklch(95% 0.06 75); color:oklch(48% 0.12 65); }
+    .badge.off { background:oklch(94% 0.006 90); color:oklch(45% 0.01 260); }
+    .rowlink { font-size:12.5px; font-weight:700; display:inline-flex; align-items:center; gap:4px; }
+    .rowlink svg { width:13px; height:13px; }
+    .foot { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-top:1px solid oklch(91% 0.006 90); }
+    .foot span { font-size:12px; color:oklch(52% 0.015 260); }
+    .pagebtns { display:flex; gap:6px; }
+    .pagebtn { width:28px; height:28px; border-radius:7px; border:1px solid oklch(88% 0.006 90); display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:600; color:oklch(40% 0.02 260); }
+    .pagebtn.active { background:oklch(42% 0.13 262); color:white; border-color:oklch(42% 0.13 262); }
+  </style>
+</helmet>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">TS</div>
+      <div class="brand-text"><b>オンラインTESOL協会</b><span>アフィリエイト管理ツール</span></div>
+    </div>
+    <div class="navsection">メイン</div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      ダッシュボード
+    </div>
+    <div class="navitem active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      インフルエンサー
+    </div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10 6"/><path d="M14 11a5 5 0 0 0-7.07 0L5.5 12.4a5 5 0 0 0 7.07 7.07L14 18"/></svg>
+      リンク管理
+    </div>
+    <div class="navsection">運用</div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+      精算・支払い
+    </div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      設定
+    </div>
+    <div class="navfoot">
+      <div class="navavatar">運</div>
+      <div class="navfoot-text"><b>運営 管理者</b><span>admin@online-tesol.jp</span></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="pagetitle">
+        <h1>インフルエンサー管理</h1>
+        <span>紹介パートナーの一覧・手数料設定</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-user">
+          <div class="topbar-avatar">運</div>
+          <div><b>運営 管理者</b><span>Owner</span></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="searchbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <span>名前・SNSアカウントで検索</span>
+          </div>
+          <div class="selectpill">ステータス: すべて
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="selectpill">カテゴリ: すべて
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <button class="btn primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新規インフルエンサー登録
+        </button>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>インフルエンサー</th>
+              <th>カテゴリ</th>
+              <th>手数料率(TESOL / IELTS)</th>
+              <th>累計CV数</th>
+              <th>累計報酬額</th>
+              <th>ステータス</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(58% 0.15 340)">田</div><div><b>田中 美咲</b><span>@misaki_english ・ Instagram</span></div></div></td>
+              <td>英語学習系</td>
+              <td><div class="rate-row"><b>15% / 12%</b><span>コース単価連動</span></div></td>
+              <td class="num">128件</td>
+              <td class="num">&#165;1,842,000</td>
+              <td><span class="badge ok">有効</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(55% 0.15 25)">I</div><div><b>IELTS Master Channel</b><span>YouTube</span></div></div></td>
+              <td>資格試験系</td>
+              <td><div class="rate-row"><b>10% / 18%</b><span>コース単価連動</span></div></td>
+              <td class="num">96件</td>
+              <td class="num">&#165;1,529,400</td>
+              <td><span class="badge ok">有効</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(55% 0.13 230)">佐</div><div><b>佐藤 健太</b><span>英語コーチ健太 ・ YouTube/X</span></div></div></td>
+              <td>英会話コーチ</td>
+              <td><div class="rate-row"><b>15% / 15%</b><span>コース単価連動</span></div></td>
+              <td class="num">74件</td>
+              <td class="num">&#165;1,342,800</td>
+              <td><span class="badge ok">有効</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(58% 0.12 150)">G</div><div><b>Global Speak 由紀</b><span>@yuki_studyabroad ・ Instagram</span></div></div></td>
+              <td>留学系</td>
+              <td><div class="rate-row"><b>12% / 12%</b><span>コース単価連動</span></div></td>
+              <td class="num">52件</td>
+              <td class="num">&#165;987,200</td>
+              <td><span class="badge ok">有効</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(58% 0.1 90)">鈴</div><div><b>鈴木 玲奈</b><span>TikTok</span></div></div></td>
+              <td>学生インフルエンサー</td>
+              <td><div class="rate-row"><b>10% / 10%</b><span>コース単価連動</span></div></td>
+              <td class="num">38件</td>
+              <td class="num">&#165;763,100</td>
+              <td><span class="badge off">停止</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(52% 0.1 210)">山</div><div><b>山本 直樹</b><span>英語の裏技 ・ YouTube</span></div></div></td>
+              <td>英語学習系</td>
+              <td><div class="rate-row"><b>15% / 15%</b><span>コース単価連動</span></div></td>
+              <td class="num">29件</td>
+              <td class="num">&#165;541,000</td>
+              <td><span class="badge ok">有効</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(50% 0.02 260)">S</div><div><b>Studio Bright English</b><span>教育メディア ・ ブログ</span></div></div></td>
+              <td>教育メディア</td>
+              <td><div class="rate-row"><b>8% / 10%</b><span>コース単価連動</span></div></td>
+              <td class="num">21件</td>
+              <td class="num">&#165;318,600</td>
+              <td><span class="badge pending">審査中</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-user"><div class="cell-avatar" style="background:oklch(60% 0.13 300)">中</div><div><b>中村 あゆみ</b><span>@ayumi_workingholiday ・ Instagram</span></div></div></td>
+              <td>ワーホリ系</td>
+              <td><div class="rate-row"><b>12% / 12%</b><span>コース単価連動</span></div></td>
+              <td class="num">12件</td>
+              <td class="num">&#165;204,000</td>
+              <td><span class="badge ok">有効</span></td>
+              <td><a class="rowlink">詳細を見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="foot">
+          <span>全24件中 1–8件を表示</span>
+          <div class="pagebtns">
+            <div class="pagebtn active">1</div>
+            <div class="pagebtn">2</div>
+            <div class="pagebtn">3</div>
+            <div class="pagebtn">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

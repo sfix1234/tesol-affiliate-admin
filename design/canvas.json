@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 1080, "title": "① ダッシュボード" },
+    { "file": "Influencers.dc.html", "x": 1540, "y": 0, "w": 1440, "h": 920, "title": "② インフルエンサー一覧" },
+    { "file": "InfluencerDetail.dc.html", "x": 0, "y": 1220, "w": 1440, "h": 1160, "title": "③ インフルエンサー詳細" },
+    { "file": "Links.dc.html", "x": 1540, "y": 1220, "w": 1440, "h": 1320, "title": "④ リンク管理・コンバージョン計測" }
+  ],
+  "annotations": [
+    { "id": "brief-summary", "x": 0, "y": -110, "w": 560, "text": "オンラインTESOL協会 アフィリエイト管理ツール\nインフルエンサー手数料管理 + リンク別コンバージョン計測" }
+  ],
+  "launch": { "view": "canvas" }
+}

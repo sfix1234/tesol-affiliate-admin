@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Noto Sans JP', system-ui, sans-serif; background: oklch(98% 0.004 90); color: oklch(22% 0.02 260); -webkit-font-smoothing:antialiased; }
+    a { color: oklch(42% 0.13 262); text-decoration:none; } a:hover { color: oklch(34% 0.13 262); }
+    .app { display:flex; min-height:100vh; }
+    .sidebar { width:248px; flex-shrink:0; background: oklch(20% 0.03 262); color: oklch(90% 0.01 260); display:flex; flex-direction:column; padding:22px 14px 24px; }
+    .brand { display:flex; align-items:center; gap:10px; padding:2px 10px 26px; border-bottom:1px solid oklch(32% 0.03 262); margin-bottom:14px; }
+    .brand-mark { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg, oklch(72% 0.14 75), oklch(60% 0.16 45)); display:flex; align-items:center; justify-content:center; font-weight:900; color:white; font-size:14px; flex-shrink:0; }
+    .brand-text b { display:block; font-size:13px; font-weight:700; color:white; line-height:1.4; }
+    .brand-text span { font-size:10.5px; color:oklch(68% 0.02 260); }
+    .navsection { font-size:10.5px; font-weight:700; letter-spacing:.06em; color:oklch(52% 0.02 260); padding:16px 12px 6px; }
+    .navitem { display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:8px; font-size:13.5px; font-weight:500; color:oklch(78% 0.01 260); margin-bottom:2px; }
+    .navitem svg { width:17px; height:17px; flex-shrink:0; opacity:.8; }
+    .navitem.active { background:oklch(30% 0.055 262); color:white; }
+    .navitem.active svg { opacity:1; color: oklch(78% 0.12 75); }
+    .navfoot { margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px; border-top:1px solid oklch(32% 0.03 262); }
+    .navavatar { width:30px; height:30px; border-radius:50%; background:oklch(55% 0.03 262); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0; }
+    .navfoot-text b { display:block; font-size:12px; color:white; }
+    .navfoot-text span { font-size:10.5px; color:oklch(62% 0.02 260); }
+    .main { flex:1; min-width:0; display:flex; flex-direction:column; }
+    .topbar { height:72px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 32px; border-bottom:1px solid oklch(90% 0.006 90); background:oklch(100% 0 0); }
+    .backlink { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:oklch(48% 0.015 260); }
+    .backlink svg { width:14px; height:14px; }
+    .btn { display:inline-flex; align-items:center; gap:7px; padding:10px 16px; border-radius:9px; font-size:13px; font-weight:700; border:none; }
+    .btn svg { width:15px; height:15px; }
+    .btn.primary { background:oklch(42% 0.13 262); color:white; }
+    .btn.ghost { background:white; color:oklch(30% 0.02 260); border:1px solid oklch(88% 0.006 90); }
+    .content { padding:26px 32px 48px; flex:1; }
+    .profile-head { display:flex; align-items:center; gap:16px; margin-bottom:24px; }
+    .profile-avatar { width:56px; height:56px; border-radius:50%; background:oklch(58% 0.15 340); color:white; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; flex-shrink:0; }
+    .profile-info { flex:1; }
+    .profile-info h1 { margin:0 0 4px; font-size:19px; font-weight:700; display:flex; align-items:center; gap:10px; }
+    .profile-info p { margin:0; font-size:12.5px; color:oklch(52% 0.015 260); }
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:100px; font-size:11.5px; font-weight:700; }
+    .badge.ok { background:oklch(94% 0.05 150); color:oklch(42% 0.11 150); }
+    .grid2 { display:grid; grid-template-columns:1.65fr 1fr; gap:20px; align-items:start; }
+    .col { display:flex; flex-direction:column; gap:20px; }
+    .card { background:white; border:1px solid oklch(91% 0.006 90); border-radius:12px; padding:22px; }
+    .card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .card-head h2 { margin:0; font-size:14.5px; font-weight:700; }
+    .card-head span { font-size:11.5px; color:oklch(52% 0.015 260); }
+    .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 20px; }
+    .info-item span { display:block; font-size:11px; color:oklch(52% 0.015 260); margin-bottom:4px; }
+    .info-item b { font-size:13px; font-weight:600; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; font-size:11px; font-weight:700; color:oklch(50% 0.015 260); padding:0 10px 10px; border-bottom:1px solid oklch(91% 0.006 90); }
+    td { padding:12px 10px; font-size:12.5px; border-bottom:1px solid oklch(94% 0.004 90); vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    .rateinput { display:flex; align-items:center; gap:6px; }
+    .rateinput input { width:52px; padding:6px 8px; border:1px solid oklch(85% 0.006 90); border-radius:6px; font-size:12.5px; font-weight:700; text-align:right; font-family:inherit; }
+    .rateinput span { font-size:12px; color:oklch(50% 0.015 260); }
+    .num { font-variant-numeric:tabular-nums; font-weight:600; }
+    .savebar { display:flex; justify-content:flex-end; margin-top:16px; }
+    .link-form { display:flex; gap:10px; margin-bottom:18px; }
+    .select, .input { flex:1; padding:9px 12px; border:1px solid oklch(85% 0.006 90); border-radius:8px; font-size:12.5px; color:oklch(30% 0.02 260); background:white; }
+    .linkrow { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid oklch(94% 0.004 90); }
+    .linkrow:last-child { border-bottom:none; }
+    .linkrow-main { flex:1; min-width:0; }
+    .linkrow-main b { display:block; font-size:12.5px; font-weight:600; font-family:'SF Mono', monospace; }
+    .linkrow-main span { font-size:11px; color:oklch(52% 0.015 260); }
+    .linkrow-stats { display:flex; gap:18px; font-size:12px; }
+    .linkrow-stats div span { display:block; font-size:10.5px; color:oklch(52% 0.015 260); }
+    .linkrow-stats div b { font-variant-numeric:tabular-nums; }
+    .copybtn { width:30px; height:30px; border-radius:7px; border:1px solid oklch(88% 0.006 90); display:flex; align-items:center; justify-content:center; color:oklch(42% 0.13 262); flex-shrink:0; }
+    .copybtn svg { width:14px; height:14px; }
+    .stat-list { display:flex; flex-direction:column; gap:14px; }
+    .stat-row { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid oklch(94% 0.004 90); }
+    .stat-row:last-child { border-bottom:none; padding-bottom:0; }
+    .stat-row span { font-size:12.5px; color:oklch(48% 0.015 260); }
+    .stat-row b { font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; }
+    .stat-row.highlight b { color:oklch(42% 0.13 262); font-size:19px; }
+    .mini-chart { display:flex; align-items:flex-end; gap:10px; height:120px; padding-top:10px; }
+    .mini-bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; }
+    .mini-bar { width:100%; max-width:28px; border-radius:5px 5px 2px 2px; background:linear-gradient(180deg, oklch(58% 0.13 262), oklch(46% 0.13 262)); }
+    .mini-bar-x { font-size:10px; color:oklch(58% 0.015 260); }
+  </style>
+</helmet>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">TS</div>
+      <div class="brand-text"><b>オンラインTESOL協会</b><span>アフィリエイト管理ツール</span></div>
+    </div>
+    <div class="navsection">メイン</div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      ダッシュボード
+    </div>
+    <div class="navitem active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      インフルエンサー
+    </div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10 6"/><path d="M14 11a5 5 0 0 0-7.07 0L5.5 12.4a5 5 0 0 0 7.07 7.07L14 18"/></svg>
+      リンク管理
+    </div>
+    <div class="navsection">運用</div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+      精算・支払い
+    </div>
+    <div class="navitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      設定
+    </div>
+    <div class="navfoot">
+      <div class="navavatar">運</div>
+      <div class="navfoot-text"><b>運営 管理者</b><span>admin@online-tesol.jp</span></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <a class="backlink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>インフルエンサー一覧に戻る</a>
+      <button class="btn ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+        プロフィールを編集
+      </button>
+    </header>
+
+    <div class="content">
+      <div class="profile-head">
+        <div class="profile-avatar">田</div>
+        <div class="profile-info">
+          <h1>田中 美咲 <span class="badge ok">有効</span></h1>
+          <p>@misaki_english ・ Instagram / 英語学習系 ・ 登録日 2025-11-03</p>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2>基本情報</h2></div>
+            <div class="info-grid">
+              <div class="info-item"><span>メールアドレス</span><b>misaki.tanaka@example.com</b></div>
+              <div class="info-item"><span>主要SNS</span><b>Instagram (@misaki_english)</b></div>
+              <div class="info-item"><span>フォロワー数</span><b>約12.4万人</b></div>
+              <div class="info-item"><span>支払方法</span><b>銀行振込</b></div>
+              <div class="info-item"><span>登録日</span><b>2025-11-03</b></div>
+              <div class="info-item"><span>担当者</span><b>運営 管理者</b></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h2>コース別手数料率設定</h2>
+              <span>割合(%) で設定</span>
+            </div>
+            <table>
+              <thead><tr><th>コース</th><th>コース単価</th><th>手数料率</th><th>1件あたり報酬</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>TESOL資格取得コース</td>
+                  <td class="num">&#165;24,000</td>
+                  <td><div class="rateinput"><input value="15" /><span>%</span></div></td>
+                  <td class="num">&#165;3,600</td>
+                </tr>
+                <tr>
+                  <td>IELTS対策コース</td>
+                  <td class="num">&#165;18,500</td>
+                  <td><div class="rateinput"><input value="12" /><span>%</span></div></td>
+                  <td class="num">&#165;2,220</td>
+                </tr>
+                <tr>
+                  <td>TESOL+IELTSセットコース</td>
+                  <td class="num">&#165;38,000</td>
+                  <td><div class="rateinput"><input value="15" /><span>%</span></div></td>
+                  <td class="num">&#165;5,700</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="savebar"><button class="btn primary">手数料設定を保存</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2>専用リンク発行</h2></div>
+            <div class="link-form">
+              <select class="select"><option>遷移先LPを選択...</option></select>
+              <input class="input" placeholder="キャンペーンタグ(任意) 例: summer" />
+              <button class="btn primary" style="flex-shrink:0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                発行
+              </button>
+            </div>
+            <div>
+              <div class="linkrow">
+                <div class="linkrow-main"><b>tesol-lp.online/r/misaki-01</b><span>TESOL資格取得コース LP ・ 発行日 2025-11-10</span></div>
+                <div class="linkrow-stats"><div><span>クリック</span><b>3,240</b></div><div><span>CV</span><b>62</b></div></div>
+                <div class="copybtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+              </div>
+              <div class="linkrow">
+                <div class="linkrow-main"><b>ielts-lp.online/r/misaki-02</b><span>IELTS対策コース LP ・ 発行日 2026-02-18</span></div>
+                <div class="linkrow-stats"><div><span>クリック</span><b>2,180</b></div><div><span>CV</span><b>41</b></div></div>
+                <div class="copybtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+              </div>
+              <div class="linkrow">
+                <div class="linkrow-main"><b>tesol-lp.online/r/misaki-summer</b><span>TESOL資格取得コース LP ・ 発行日 2026-07-01</span></div>
+                <div class="linkrow-stats"><div><span>クリック</span><b>1,860</b></div><div><span>CV</span><b>25</b></div></div>
+                <div class="copybtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2>実績サマリー</h2></div>
+            <div class="stat-list">
+              <div class="stat-row"><span>累計クリック数</span><b>7,280</b></div>
+              <div class="stat-row"><span>累計コンバージョン数</span><b>128件</b></div>
+              <div class="stat-row"><span>コンバージョン率</span><b>1.76%</b></div>
+              <div class="stat-row highlight"><span>累計確定報酬額</span><b>&#165;1,842,000</b></div>
+              <div class="stat-row"><span>今月の報酬額</span><b>&#165;186,400</b></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>月別報酬推移</h2></div>
+            <div class="mini-chart">
+              <div class="mini-bar-col"><div class="mini-bar" style="height:52px"></div><div class="mini-bar-x">3月</div></div>
+              <div class="mini-bar-col"><div class="mini-bar" style="height:68px"></div><div class="mini-bar-x">4月</div></div>
+              <div class="mini-bar-col"><div class="mini-bar" style="height:74px"></div><div class="mini-bar-x">5月</div></div>
+              <div class="mini-bar-col"><div class="mini-bar" style="height:60px"></div><div class="mini-bar-x">6月</div></div>
+              <div class="mini-bar-col"><div class="mini-bar" style="height:96px"></div><div class="mini-bar-x">7月</div></div>
+              <div class="mini-bar-col"><div class="mini-bar" style="height:110px"></div><div class="mini-bar-x">8月</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
