@@ -9,6 +9,7 @@ import {
 } from "@/components/icons";
 import { formatYen, payoutStatusBadgeClass, payoutStatusLabel } from "@/lib/data";
 import { fetchInfluencers, fetchPayoutHistory, fetchPayoutQueue } from "@/lib/queries";
+import { PayoutActions } from "./PayoutActions";
 
 export const dynamic = "force-dynamic";
 
@@ -91,13 +92,7 @@ export default async function PayoutsPage() {
                 <ChevronDownIcon width={13} height={13} />
               </div>
             </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button className="btn ghost">CSVエクスポート</button>
-              <button className="btn primary">
-                <WalletIcon width={15} height={15} />
-                一括で支払い処理
-              </button>
-            </div>
+            <PayoutActions queue={currentPayoutQueue} influencers={influencers} />
           </div>
 
           <div className="card flush">

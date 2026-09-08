@@ -1,8 +1,8 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar, TopbarUser } from "@/components/Topbar";
-import { PlusIcon } from "@/components/icons";
 import { fetchAdminMembers, fetchCourses, fetchOrgSettings } from "@/lib/queries";
 import { CommissionRatesForm, NotificationSettingsForm, OrgInfoForm, PayoutSettingsForm } from "./SettingsForms";
+import { InviteMemberButton } from "./InviteMemberModal";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +29,7 @@ export default async function SettingsPage() {
           <div className="card flush">
             <div className="card-head">
               <h2>メンバー管理</h2>
-              <button className="btn primary">
-                <PlusIcon />
-                メンバーを招待
-              </button>
+              <InviteMemberButton />
             </div>
             <div className="card-pad">
               <table>
