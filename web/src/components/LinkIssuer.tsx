@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CopyButton } from "./CopyButton";
 import { PlusIcon } from "./icons";
-import { courses } from "@/lib/data";
+import type { Course } from "@/lib/data";
 import { buildNewLink } from "@/lib/generateLink";
 
 type LinkItem = {
@@ -18,16 +18,18 @@ type LinkItem = {
 export function LinkIssuer({
   influencerId,
   initialLinks,
+  courses,
 }: {
   influencerId: string;
   initialLinks: LinkItem[];
+  courses: Course[];
 }) {
   const [links, setLinks] = useState(initialLinks);
   const [courseKey, setCourseKey] = useState("");
   const [tag, setTag] = useState("");
 
   function handleIssue() {
-    const newLink = buildNewLink({ influencerId, courseKey, tag });
+    const newLink = buildNewLink({ courses, influencerId, courseKey, tag });
     if (!newLink) return;
     setLinks((prev) => [newLink, ...prev]);
     setCourseKey("");

@@ -11,22 +11,23 @@ import {
   TrendUpIcon,
   WalletIcon,
 } from "@/components/icons";
-import {
-  clickTrend,
-  dashboardKpis,
-  formatYen,
-  getInfluencerById,
-  influencers,
-  recentConversions,
-} from "@/lib/data";
+import { clickTrend, dashboardKpis, formatYen } from "@/lib/data";
+import { fetchInfluencers, fetchRecentConversions } from "@/lib/queries";
+
+export const dynamic = "force-dynamic";
 
 const CHART_MAX = 180;
 
-const topInfluencers = [...influencers]
-  .sort((a, b) => b.totals.monthReward - a.totals.monthReward)
-  .slice(0, 5);
+export default async function DashboardPage() {
+  const [influencers, recentConversions] = await Promise.all([
+    fetchInfluencers(),
+    fetchRecentConversions(),
+  ]);
+  const topInfluencers = [...influencers]
+    .sort((a, b) => b.totals.monthReward - a.totals.monthReward)
+    .slice(0, 5);
+  const getInfluencerById = (id: string) => influencers.find((i) => i.id === id);
 
-export default function DashboardPage() {
   return (
     <div className="app">
       <Sidebar active="dashboard" />

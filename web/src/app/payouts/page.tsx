@@ -7,16 +7,18 @@ import {
   CheckCircleIcon,
   WalletIcon,
 } from "@/components/icons";
-import {
-  currentPayoutQueue,
-  formatYen,
-  getInfluencerById,
-  payoutHistory,
-  payoutStatusBadgeClass,
-  payoutStatusLabel,
-} from "@/lib/data";
+import { formatYen, payoutStatusBadgeClass, payoutStatusLabel } from "@/lib/data";
+import { fetchInfluencers, fetchPayoutHistory, fetchPayoutQueue } from "@/lib/queries";
 
-export default function PayoutsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function PayoutsPage() {
+  const [currentPayoutQueue, payoutHistory, influencers] = await Promise.all([
+    fetchPayoutQueue(),
+    fetchPayoutHistory(),
+    fetchInfluencers(),
+  ]);
+  const getInfluencerById = (id: string) => influencers.find((i) => i.id === id);
   const payeeCount = currentPayoutQueue.length;
   const totalDue = currentPayoutQueue.reduce((sum, p) => sum + p.amount, 0);
   const paidAmount = currentPayoutQueue

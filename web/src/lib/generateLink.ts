@@ -1,10 +1,12 @@
-import { courses } from "./data";
+import type { Course } from "./data";
 
 export function buildNewLink({
+  courses,
   influencerId,
   courseKey,
   tag,
 }: {
+  courses: Course[];
   influencerId: string;
   courseKey: string;
   tag: string;

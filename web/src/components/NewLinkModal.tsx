@@ -3,14 +3,18 @@
 import { useState } from "react";
 import { CopyButton } from "./CopyButton";
 import { PlusIcon } from "./icons";
-import { courses, influencers } from "@/lib/data";
+import type { Course, Influencer } from "@/lib/data";
 import { buildNewLink } from "@/lib/generateLink";
 
 type CreatedLink = ReturnType<typeof buildNewLink>;
 
 export function NewLinkButton({
+  courses,
+  influencers,
   onCreate,
 }: {
+  courses: Course[];
+  influencers: Influencer[];
   onCreate: (link: NonNullable<CreatedLink> & { influencerId: string }) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -34,7 +38,7 @@ export function NewLinkButton({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!influencerId || !courseKey) return;
-    const link = buildNewLink({ influencerId, courseKey, tag });
+    const link = buildNewLink({ courses, influencerId, courseKey, tag });
     if (!link) return;
     onCreate({ ...link, influencerId });
     setCreated(link);

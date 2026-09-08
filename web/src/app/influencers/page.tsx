@@ -2,9 +2,13 @@ import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar, TopbarUser } from "@/components/Topbar";
 import { ArrowRightIcon, ChevronDownIcon, PlusIcon, SearchIcon } from "@/components/icons";
-import { formatYen, influencers, statusBadgeClass, statusLabel } from "@/lib/data";
+import { formatYen, statusBadgeClass, statusLabel } from "@/lib/data";
+import { fetchInfluencers } from "@/lib/queries";
 
-export default function InfluencersPage() {
+export const dynamic = "force-dynamic";
+
+export default async function InfluencersPage() {
+  const influencers = await fetchInfluencers();
   return (
     <div className="app">
       <Sidebar active="influencers" />

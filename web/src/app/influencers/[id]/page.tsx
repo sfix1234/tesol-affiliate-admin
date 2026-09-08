@@ -3,24 +3,14 @@ import { notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { LinkIssuer } from "@/components/LinkIssuer";
 import { ArrowLeftIcon, EditIcon } from "@/components/icons";
-import {
-  courses,
-  formatYen,
-  getInfluencerById,
-  influencers,
-  statusBadgeClass,
-  statusLabel,
-} from "@/lib/data";
-
-export function generateStaticParams() {
-  return influencers.map((inf) => ({ id: inf.id }));
-}
+import { formatYen, statusBadgeClass, statusLabel } from "@/lib/data";
+import { fetchCourses, fetchInfluencerById } from "@/lib/queries";
 
 export default async function InfluencerDetailPage({
   params,
 }: PageProps<"/influencers/[id]">) {
   const { id } = await params;
-  const inf = getInfluencerById(id);
+  const [inf, courses] = await Promise.all([fetchInfluencerById(id), fetchCourses()]);
   if (!inf) notFound();
 
   const maxMonthly = Math.max(...inf.monthlyRewards.map((m) => m.value), 1);
@@ -137,7 +127,7 @@ export default async function InfluencerDetailPage({
                 <div className="card-head">
                   <h2>専用リンク発行</h2>
                 </div>
-                <LinkIssuer influencerId={inf.id} initialLinks={inf.links} />
+                <LinkIssuer influencerId={inf.id} initialLinks={inf.links} courses={courses} />
               </div>
             </div>
 

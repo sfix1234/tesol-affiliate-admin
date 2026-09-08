@@ -2,9 +2,12 @@ import { Sidebar } from "@/components/Sidebar";
 import { Topbar, TopbarUser } from "@/components/Topbar";
 import { Toggle } from "@/components/Toggle";
 import { PlusIcon } from "@/components/icons";
-import { adminMembers, courses } from "@/lib/data";
+import { fetchAdminMembers, fetchCourses } from "@/lib/queries";
 
-export default function SettingsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SettingsPage() {
+  const [courses, adminMembers] = await Promise.all([fetchCourses(), fetchAdminMembers()]);
   return (
     <div className="app">
       <Sidebar active="settings" />
