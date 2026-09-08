@@ -20,8 +20,8 @@ export default async function CoursesPage() {
         </Topbar>
 
         <div className="content page-stack">
-          <CommissionRatesForm key={formKey} courses={courses} />
-          <LpTrackingForm key={formKey} courses={courses} siteOrigin={`https://${SITE_DOMAIN}`} />
+          <CommissionRatesForm key={`rates-${formKey}`} courses={courses} />
+          <LpTrackingForm key={`lp-${formKey}`} courses={courses} siteOrigin={`https://${SITE_DOMAIN}`} />
         </div>
       </div>
     </div>
