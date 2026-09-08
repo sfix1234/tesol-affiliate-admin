@@ -17,4 +17,11 @@ http://localhost:3000 で起動します。
 
 ## デプロイ
 
-`main` ブランチへの push で GitHub Actions が `web/` を静的エクスポートし、GitHub Pages に自動デプロイします(`.github/workflows/deploy-pages.yml`)。
+Vercelプロジェクト(Root Directory: `web`)と連携済み。`main` ブランチへの push で自動的に本番デプロイされます。
+
+手動でデプロイする場合は `web/` ディレクトリで:
+
+```bash
+vercel        # プレビューデプロイ
+vercel --prod # 本番デプロイ
+```
