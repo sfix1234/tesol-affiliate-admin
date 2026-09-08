@@ -5,7 +5,13 @@ import type { Influencer, Conversion, PayoutQueueItem, PayoutBatch, AdminMember,
 export async function fetchCourses(): Promise<Course[]> {
   const { data, error } = await supabaseAdmin().from("courses").select("*").order("price");
   if (error) throw error;
-  return (data ?? []).map((c) => ({ key: c.key, name: c.name, price: c.price, defaultRate: c.default_rate }));
+  return (data ?? []).map((c) => ({
+    key: c.key,
+    name: c.name,
+    price: c.price,
+    defaultRate: c.default_rate,
+    lpUrl: c.lp_url,
+  }));
 }
 
 export async function fetchInfluencers(): Promise<Influencer[]> {

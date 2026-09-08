@@ -1,7 +1,7 @@
 export type InfluencerStatus = "active" | "suspended" | "pending";
 export type ConversionStatus = "confirmed" | "pending" | "cancelled";
 
-export type Course = { key: string; name: string; price: number; defaultRate: number };
+export type Course = { key: string; name: string; price: number; defaultRate: number; lpUrl: string };
 
 export type LeadStatus = "interview_scheduled" | "converted" | "no_show" | "cancelled";
 

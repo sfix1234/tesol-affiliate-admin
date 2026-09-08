@@ -1,8 +1,9 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar, TopbarUser } from "@/components/Topbar";
 import { fetchAdminMembers, fetchCourses, fetchOrgSettings } from "@/lib/queries";
-import { CommissionRatesForm, NotificationSettingsForm, OrgInfoForm, PayoutSettingsForm } from "./SettingsForms";
+import { CommissionRatesForm, LpTrackingForm, NotificationSettingsForm, OrgInfoForm, PayoutSettingsForm } from "./SettingsForms";
 import { InviteMemberButton } from "./InviteMemberModal";
+import { SITE_DOMAIN } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function SettingsPage() {
         <div className="content page-stack">
           <OrgInfoForm settings={orgSettings} />
           <CommissionRatesForm courses={courses} />
+          <LpTrackingForm courses={courses} siteOrigin={`https://${SITE_DOMAIN}`} />
           <PayoutSettingsForm settings={orgSettings} />
           <NotificationSettingsForm settings={orgSettings} />
 

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { supabaseAdmin } from "./supabase";
+import { SITE_DOMAIN } from "./site";
 
 const AVATAR_COLORS = [
   "oklch(58% 0.15 340)",
@@ -40,7 +41,6 @@ export async function createAffiliateLink({
     .single();
   if (courseError || !course) throw new Error("コースが見つかりません");
 
-  const domain = courseKey === "ielts" ? "ielts-lp.online" : "tesol-lp.online";
   const namePart = influencerId.split("-")[0];
   const tagPart = slugify(tag);
   const suffix = Math.random().toString(36).slice(2, 6);
@@ -49,7 +49,8 @@ export async function createAffiliateLink({
   const link = {
     id,
     influencer_id: influencerId,
-    short_url: `${domain}/r/${id}`,
+    course_key: courseKey,
+    short_url: `${SITE_DOMAIN}/r/${id}`,
     landing_page: `${course.name} LP`,
     created_at: new Date().toISOString().slice(0, 10),
     clicks: 0,
@@ -215,6 +216,16 @@ export async function updateCourseRates(rates: { key: string; defaultRate: numbe
     if (error) throw new Error(error.message);
   }
   revalidatePath("/settings");
+}
+
+export async function updateCourseLpUrls(courses: { key: string; lpUrl: string }[]) {
+  const db = supabaseAdmin();
+  for (const c of courses) {
+    const { error } = await db.from("courses").update({ lp_url: c.lpUrl }).eq("key", c.key);
+    if (error) throw new Error(error.message);
+  }
+  revalidatePath("/settings");
+  revalidatePath("/links");
 }
 
 export async function updateInfluencerProfile({

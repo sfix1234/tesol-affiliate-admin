@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Toggle } from "@/components/Toggle";
 import {
+  updateCourseLpUrls,
   updateCourseRates,
   updateNotificationSettings,
   updateOrgSettings,
@@ -130,6 +131,91 @@ export function CommissionRatesForm({ courses }: { courses: Course[] }) {
       </table>
       <div className="savebar">
         <SaveButton pending={pending} saved={saved} />
+      </div>
+    </form>
+  );
+}
+
+export function LpTrackingForm({ courses, siteOrigin }: { courses: Course[]; siteOrigin: string }) {
+  const router = useRouter();
+  const [urls, setUrls] = useState(Object.fromEntries(courses.map((c) => [c.key, c.lpUrl])));
+  const [pending, setPending] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setPending(true);
+    setSaved(false);
+    try {
+      await updateCourseLpUrls(courses.map((c) => ({ key: c.key, lpUrl: urls[c.key] })));
+      setSaved(true);
+      router.refresh();
+    } finally {
+      setPending(false);
+    }
+  }
+
+  function pixelTag(key: string) {
+    return `<img src="${siteOrigin}/api/leads?ref={リンクID}" width="1" height="1" style="display:none">`;
+  }
+
+  function copy(key: string, text: string) {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey((k) => (k === key ? null : k)), 1500);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="card">
+      <div className="card-head">
+        <h2>LP計測設定</h2>
+        <span>コースごとの実際のLP URL・計測タグ</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>コース</th>
+            <th>実際のLP URL(リダイレクト先)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map((c) => (
+            <tr key={c.key}>
+              <td>{c.name}</td>
+              <td>
+                <input
+                  style={{ width: "100%" }}
+                  value={urls[c.key]}
+                  placeholder="https://example.com/lp/..."
+                  onChange={(e) => {
+                    setUrls((prev) => ({ ...prev, [c.key]: e.target.value }));
+                    setSaved(false);
+                  }}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="savebar">
+        <SaveButton pending={pending} saved={saved} />
+      </div>
+
+      <div className="field-hint" style={{ marginTop: 16 }}>
+        紹介リンク(<code>{siteOrigin}/r/&#123;リンクID&#125;</code>)は上記のLP URLへ<code>?ref=&#123;リンクID&#125;</code>付きでリダイレクトされ、クリックを自動記録します。
+        LP側の申込み完了ページに以下のタグを設置すると、面談登録(リード)が自動作成されます(<code>&#123;リンクID&#125;</code>はページURLの<code>ref</code>パラメータの値に置き換えてください)。
+      </div>
+      <div className="rateinput" style={{ marginTop: 8, alignItems: "flex-start", flexDirection: "column", gap: 6 }}>
+        <code style={{ fontSize: 12, wordBreak: "break-all" }}>{pixelTag("tag")}</code>
+        <button
+          type="button"
+          className="btn ghost"
+          style={{ padding: "4px 10px", fontSize: 12 }}
+          onClick={() => copy("tag", pixelTag("tag"))}
+        >
+          {copiedKey === "tag" ? "コピーしました" : "タグをコピー"}
+        </button>
       </div>
     </form>
   );
