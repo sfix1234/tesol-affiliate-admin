@@ -1,11 +1,11 @@
 import "server-only";
 import { supabaseAdmin } from "./supabase";
-import type { Influencer, Conversion, PayoutQueueItem, PayoutBatch, AdminMember } from "./data";
+import type { Influencer, Conversion, PayoutQueueItem, PayoutBatch, AdminMember, Course, Lead, OrgSettings } from "./data";
 
-export async function fetchCourses() {
+export async function fetchCourses(): Promise<Course[]> {
   const { data, error } = await supabaseAdmin().from("courses").select("*").order("price");
   if (error) throw error;
-  return data as { key: string; name: string; price: number }[];
+  return (data ?? []).map((c) => ({ key: c.key, name: c.name, price: c.price, defaultRate: c.default_rate }));
 }
 
 export async function fetchInfluencers(): Promise<Influencer[]> {
@@ -112,4 +112,43 @@ export async function fetchAdminMembers(): Promise<AdminMember[]> {
   const { data, error } = await supabaseAdmin().from("admin_members").select("*");
   if (error) throw error;
   return data as AdminMember[];
+}
+
+export async function fetchLeads(): Promise<Lead[]> {
+  const { data, error } = await supabaseAdmin()
+    .from("leads")
+    .select("*")
+    .order("occurred_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((l) => ({
+    id: l.id,
+    occurredAt: l.occurred_at,
+    influencerId: l.influencer_id,
+    linkId: l.link_id,
+    status: l.status,
+    note: l.note,
+  }));
+}
+
+export async function fetchOrgSettings(): Promise<OrgSettings> {
+  const { data, error } = await supabaseAdmin()
+    .from("org_settings")
+    .select("*")
+    .eq("id", "default")
+    .single();
+  if (error) throw error;
+  return {
+    orgName: data.org_name,
+    adminEmail: data.admin_email,
+    websiteUrl: data.website_url,
+    supportEmail: data.support_email,
+    payoutCycle: data.payout_cycle,
+    minPayoutAmount: data.min_payout_amount,
+    defaultPayoutMethod: data.default_payout_method,
+    holdPeriodDays: data.hold_period_days,
+    notifyNewConversion: data.notify_new_conversion,
+    notifyPendingAlert: data.notify_pending_alert,
+    notifyNewInfluencer: data.notify_new_influencer,
+    notifyMonthlyReport: data.notify_monthly_report,
+  };
 }

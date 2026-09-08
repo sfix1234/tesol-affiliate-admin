@@ -1,7 +1,47 @@
 export type InfluencerStatus = "active" | "suspended" | "pending";
 export type ConversionStatus = "confirmed" | "pending" | "cancelled";
 
-export type Course = { key: string; name: string; price: number };
+export type Course = { key: string; name: string; price: number; defaultRate: number };
+
+export type LeadStatus = "interview_scheduled" | "converted" | "no_show" | "cancelled";
+
+export const leadStatusLabel: Record<LeadStatus, string> = {
+  interview_scheduled: "面談予定",
+  converted: "成約",
+  no_show: "不参加",
+  cancelled: "不成立",
+};
+
+export const leadStatusBadgeClass: Record<LeadStatus, string> = {
+  interview_scheduled: "pending",
+  converted: "ok",
+  no_show: "off",
+  cancelled: "off",
+};
+
+export type Lead = {
+  id: number;
+  occurredAt: string;
+  influencerId: string;
+  linkId: string;
+  status: LeadStatus;
+  note: string | null;
+};
+
+export type OrgSettings = {
+  orgName: string;
+  adminEmail: string;
+  websiteUrl: string;
+  supportEmail: string;
+  payoutCycle: string;
+  minPayoutAmount: number;
+  defaultPayoutMethod: string;
+  holdPeriodDays: number;
+  notifyNewConversion: boolean;
+  notifyPendingAlert: boolean;
+  notifyNewInfluencer: boolean;
+  notifyMonthlyReport: boolean;
+};
 
 export type Influencer = {
   id: string;

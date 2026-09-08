@@ -13,7 +13,9 @@ import {
   type Conversion,
   type Course,
   type Influencer,
+  type Lead,
 } from "@/lib/data";
+import { LeadsPanel } from "./LeadsPanel";
 
 type LinkRow = {
   id: string;
@@ -53,10 +55,12 @@ export function LinksPageClient({
   influencers,
   recentConversions,
   courses,
+  leads,
 }: {
   influencers: Influencer[];
   recentConversions: Conversion[];
   courses: Course[];
+  leads: Lead[];
 }) {
   const getInfluencerById = (id: string) => influencers.find((i) => i.id === id);
   const baseLinks: LinkRow[] = influencers.flatMap((inf) => inf.links.map((link) => toRow(link, inf)));
@@ -105,6 +109,8 @@ export function LinksPageClient({
             </div>
             <NewLinkButton courses={courses} influencers={influencers} onCreate={handleCreate} />
           </div>
+
+          <LeadsPanel leads={leads} influencers={influencers} courses={courses} />
 
           <div className="card flush">
             <div className="card-head">

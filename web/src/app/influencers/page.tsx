@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar, TopbarUser } from "@/components/Topbar";
-import { ArrowRightIcon, ChevronDownIcon, PlusIcon, SearchIcon } from "@/components/icons";
+import { ArrowRightIcon, ChevronDownIcon, SearchIcon } from "@/components/icons";
+import { NewInfluencerButton } from "@/components/NewInfluencerModal";
 import { formatYen, statusBadgeClass, statusLabel } from "@/lib/data";
 import { fetchInfluencers } from "@/lib/queries";
 
@@ -33,10 +34,7 @@ export default async function InfluencersPage() {
                 <ChevronDownIcon width={13} height={13} />
               </div>
             </div>
-            <button className="btn primary">
-              <PlusIcon />
-              新規インフルエンサー登録
-            </button>
+            <NewInfluencerButton />
           </div>
 
           <div className="card flush">

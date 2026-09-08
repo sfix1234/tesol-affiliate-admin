@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CopyButton } from "./CopyButton";
 import { PlusIcon } from "./icons";
 import type { Course } from "@/lib/data";
-import { buildNewLink } from "@/lib/generateLink";
+import { createAffiliateLink } from "@/lib/actions";
 
 type LinkItem = {
   id: string;
@@ -27,13 +27,23 @@ export function LinkIssuer({
   const [links, setLinks] = useState(initialLinks);
   const [courseKey, setCourseKey] = useState("");
   const [tag, setTag] = useState("");
+  const [issuing, setIssuing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleIssue() {
-    const newLink = buildNewLink({ courses, influencerId, courseKey, tag });
-    if (!newLink) return;
-    setLinks((prev) => [newLink, ...prev]);
-    setCourseKey("");
-    setTag("");
+  async function handleIssue() {
+    if (!courseKey) return;
+    setIssuing(true);
+    setError(null);
+    try {
+      const newLink = await createAffiliateLink({ influencerId, courseKey, tag });
+      setLinks((prev) => [newLink, ...prev]);
+      setCourseKey("");
+      setTag("");
+    } catch {
+      setError("リンクの発行に失敗しました。もう一度お試しください。");
+    } finally {
+      setIssuing(false);
+    }
   }
 
   return (
@@ -61,12 +71,13 @@ export function LinkIssuer({
           className="btn primary"
           style={{ flexShrink: 0 }}
           onClick={handleIssue}
-          disabled={!courseKey}
+          disabled={!courseKey || issuing}
         >
           <PlusIcon />
-          発行
+          {issuing ? "発行中..." : "発行"}
         </button>
       </div>
+      {error && <p style={{ color: "var(--danger, #c0392b)", fontSize: 12.5, margin: 0 }}>{error}</p>}
       <div>
         {links.length === 0 ? (
           <p style={{ fontSize: 12.5, color: "var(--text-muted)", margin: 0 }}>

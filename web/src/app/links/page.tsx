@@ -1,16 +1,22 @@
 import { LinksPageClient } from "./LinksPageClient";
-import { fetchCourses, fetchInfluencers, fetchRecentConversions } from "@/lib/queries";
+import { fetchCourses, fetchInfluencers, fetchLeads, fetchRecentConversions } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function LinksPage() {
-  const [influencers, recentConversions, courses] = await Promise.all([
+  const [influencers, recentConversions, courses, leads] = await Promise.all([
     fetchInfluencers(),
     fetchRecentConversions(),
     fetchCourses(),
+    fetchLeads(),
   ]);
 
   return (
-    <LinksPageClient influencers={influencers} recentConversions={recentConversions} courses={courses} />
+    <LinksPageClient
+      influencers={influencers}
+      recentConversions={recentConversions}
+      courses={courses}
+      leads={leads}
+    />
   );
 }
