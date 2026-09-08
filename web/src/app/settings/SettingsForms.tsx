@@ -156,9 +156,16 @@ export function LpTrackingForm({ courses, siteOrigin }: { courses: Course[]; sit
     }
   }
 
-  function pixelTag(key: string) {
-    return `<img src="${siteOrigin}/api/leads?ref={リンクID}" width="1" height="1" style="display:none">`;
-  }
+  const autoTag = `<script>
+(function () {
+  var ref = new URLSearchParams(location.search).get("ref");
+  if (!ref) return;
+  var img = document.createElement("img");
+  img.src = "${siteOrigin}/api/leads?ref=" + encodeURIComponent(ref);
+  img.width = 1; img.height = 1; img.style.display = "none";
+  document.body.appendChild(img);
+})();
+</script>`;
 
   function copy(key: string, text: string) {
     navigator.clipboard.writeText(text);
@@ -202,20 +209,41 @@ export function LpTrackingForm({ courses, siteOrigin }: { courses: Course[]; sit
         <SaveButton pending={pending} saved={saved} />
       </div>
 
-      <div className="field-hint" style={{ marginTop: 16 }}>
-        紹介リンク(<code>{siteOrigin}/r/&#123;リンクID&#125;</code>)は上記のLP URLへ<code>?ref=&#123;リンクID&#125;</code>付きでリダイレクトされ、クリックを自動記録します。
-        LP側の申込み完了ページに以下のタグを設置すると、面談登録(リード)が自動作成されます(<code>&#123;リンクID&#125;</code>はページURLの<code>ref</code>パラメータの値に置き換えてください)。
-      </div>
-      <div className="rateinput" style={{ marginTop: 8, alignItems: "flex-start", flexDirection: "column", gap: 6 }}>
-        <code style={{ fontSize: 12, wordBreak: "break-all" }}>{pixelTag("tag")}</code>
-        <button
-          type="button"
-          className="btn ghost"
-          style={{ padding: "4px 10px", fontSize: 12 }}
-          onClick={() => copy("tag", pixelTag("tag"))}
+      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--border, #e5e7eb)" }}>
+        <div style={{ fontWeight: 700, fontSize: 13.5, marginBottom: 10 }}>クリック・申込みの計測を始める3ステップ</div>
+        <ol style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: "var(--text-muted)" }}>
+          <li>
+            上の表に、各コースの<b>実際のLPのURL</b>を入力して保存する
+          </li>
+          <li>
+            リンク管理ページで発行される紹介リンクは、自動的にそのLPへ転送される。<b>この転送のタイミングでクリックが自動的に記録される</b>ので、追加の作業は不要
+          </li>
+          <li>
+            LPの「申込み完了ページ(サンクスページ)」に、下のタグをそのまま貼り付けてもらう。<b>中身を書き換える必要はない</b> — ページを開いたときに自動でリンクを判別し、面談登録(リード)としてこのアプリに記録される
+          </li>
+        </ol>
+
+        <div
+          style={{
+            marginTop: 12,
+            background: "var(--bg-subtle, #f3f4f6)",
+            borderRadius: 8,
+            padding: 12,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
         >
-          {copiedKey === "tag" ? "コピーしました" : "タグをコピー"}
-        </button>
+          <pre style={{ margin: 0, fontSize: 11.5, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{autoTag}</pre>
+          <button
+            type="button"
+            className="btn primary"
+            style={{ alignSelf: "flex-start", padding: "6px 12px", fontSize: 12 }}
+            onClick={() => copy("tag", autoTag)}
+          >
+            {copiedKey === "tag" ? "コピーしました" : "このタグをコピーしてLP制作会社に渡す"}
+          </button>
+        </div>
       </div>
     </form>
   );
