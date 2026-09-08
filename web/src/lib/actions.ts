@@ -169,26 +169,6 @@ export async function updateOrgSettings(input: {
   revalidatePath("/settings");
 }
 
-export async function updatePayoutSettings(input: {
-  payoutCycle: string;
-  minPayoutAmount: number;
-  defaultPayoutMethod: string;
-  holdPeriodDays: number;
-}) {
-  const db = supabaseAdmin();
-  const { error } = await db
-    .from("org_settings")
-    .update({
-      payout_cycle: input.payoutCycle,
-      min_payout_amount: input.minPayoutAmount,
-      default_payout_method: input.defaultPayoutMethod,
-      hold_period_days: input.holdPeriodDays,
-    })
-    .eq("id", "default");
-  if (error) throw new Error(error.message);
-  revalidatePath("/settings");
-}
-
 export async function updateNotificationSettings(input: {
   notifyNewConversion: boolean;
   notifyPendingAlert: boolean;

@@ -8,7 +8,6 @@ import {
   updateCourseRates,
   updateNotificationSettings,
   updateOrgSettings,
-  updatePayoutSettings,
 } from "@/lib/actions";
 import type { Course, OrgSettings } from "@/lib/data";
 
@@ -244,78 +243,6 @@ export function LpTrackingForm({ courses, siteOrigin }: { courses: Course[]; sit
             {copiedKey === "tag" ? "コピーしました" : "このタグをコピーしてLP制作会社に渡す"}
           </button>
         </div>
-      </div>
-    </form>
-  );
-}
-
-export function PayoutSettingsForm({ settings }: { settings: OrgSettings }) {
-  const router = useRouter();
-  const [payoutCycle, setPayoutCycle] = useState(settings.payoutCycle);
-  const [minPayoutAmount, setMinPayoutAmount] = useState(settings.minPayoutAmount);
-  const [defaultPayoutMethod, setDefaultPayoutMethod] = useState(settings.defaultPayoutMethod);
-  const [holdPeriodDays, setHoldPeriodDays] = useState(settings.holdPeriodDays);
-  const [pending, setPending] = useState(false);
-  const [saved, setSaved] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setPending(true);
-    setSaved(false);
-    try {
-      await updatePayoutSettings({ payoutCycle, minPayoutAmount, defaultPayoutMethod, holdPeriodDays });
-      setSaved(true);
-      router.refresh();
-    } finally {
-      setPending(false);
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="card">
-      <div className="card-head">
-        <h2>支払い設定</h2>
-      </div>
-      <div className="field-row">
-        <div className="field">
-          <span>支払いサイクル</span>
-          <select value={payoutCycle} onChange={(e) => { setPayoutCycle(e.target.value); setSaved(false); }}>
-            <option value="monthly-5">毎月5日</option>
-            <option value="monthly-20">毎月20日</option>
-            <option value="biweekly">隔週</option>
-          </select>
-        </div>
-        <div className="field">
-          <span>最低支払金額</span>
-          <input
-            type="number"
-            min={0}
-            value={minPayoutAmount}
-            onChange={(e) => { setMinPayoutAmount(Number(e.target.value)); setSaved(false); }}
-          />
-        </div>
-        <div className="field">
-          <span>デフォルト支払方法</span>
-          <select value={defaultPayoutMethod} onChange={(e) => { setDefaultPayoutMethod(e.target.value); setSaved(false); }}>
-            <option value="bank">銀行振込</option>
-            <option value="paypal">PayPal</option>
-          </select>
-        </div>
-        <div className="field">
-          <span>確定までの保留期間(日数)</span>
-          <input
-            type="number"
-            min={0}
-            value={holdPeriodDays}
-            onChange={(e) => { setHoldPeriodDays(Number(e.target.value)); setSaved(false); }}
-          />
-        </div>
-      </div>
-      <div className="field-hint">
-        確定までの保留期間中に発生したキャンセル・返金は自動的に報酬から差し引かれます。
-      </div>
-      <div className="savebar">
-        <SaveButton pending={pending} saved={saved} />
       </div>
     </form>
   );

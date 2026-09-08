@@ -33,10 +33,6 @@ export type OrgSettings = {
   adminEmail: string;
   websiteUrl: string;
   supportEmail: string;
-  payoutCycle: string;
-  minPayoutAmount: number;
-  defaultPayoutMethod: string;
-  holdPeriodDays: number;
   notifyNewConversion: boolean;
   notifyPendingAlert: boolean;
   notifyNewInfluencer: boolean;

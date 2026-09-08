@@ -1,7 +1,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar, TopbarUser } from "@/components/Topbar";
 import { fetchAdminMembers, fetchCourses, fetchOrgSettings } from "@/lib/queries";
-import { CommissionRatesForm, LpTrackingForm, NotificationSettingsForm, OrgInfoForm, PayoutSettingsForm } from "./SettingsForms";
+import { CommissionRatesForm, LpTrackingForm, NotificationSettingsForm, OrgInfoForm } from "./SettingsForms";
 import { InviteMemberButton } from "./InviteMemberModal";
 import { SITE_DOMAIN } from "@/lib/site";
 
@@ -25,7 +25,6 @@ export default async function SettingsPage() {
           <OrgInfoForm settings={orgSettings} />
           <CommissionRatesForm courses={courses} />
           <LpTrackingForm courses={courses} siteOrigin={`https://${SITE_DOMAIN}`} />
-          <PayoutSettingsForm settings={orgSettings} />
           <NotificationSettingsForm settings={orgSettings} />
 
           <div className="card flush">
