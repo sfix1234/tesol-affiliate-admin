@@ -317,41 +317,6 @@ export async function inviteAdminMember({
   revalidatePath("/settings");
 }
 
-export async function processPayoutBatch() {
-  const db = supabaseAdmin();
-  const { data: queue, error: queueError } = await db
-    .from("payout_queue")
-    .select("*")
-    .in("status", ["unpaid", "processing"]);
-  if (queueError) throw new Error(queueError.message);
-  if (!queue || queue.length === 0) return { payeeCount: 0, totalAmount: 0 };
-
-  const totalAmount = queue.reduce((sum, p) => sum + p.amount, 0);
-  const payeeCount = queue.length;
-  const today = new Date().toISOString().slice(0, 10);
-  const now = new Date();
-  const period = `${now.getFullYear()}年${now.getMonth() + 1}月分`;
-  const batchId = `PAY-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${Math.random().toString(36).slice(2, 5)}`;
-
-  const { error: historyError } = await db.from("payout_history").insert({
-    id: batchId,
-    period,
-    paid_at: today,
-    payee_count: payeeCount,
-    total_amount: totalAmount,
-  });
-  if (historyError) throw new Error(historyError.message);
-
-  const { error: updateError } = await db
-    .from("payout_queue")
-    .update({ status: "paid", last_paid_at: today })
-    .in("status", ["unpaid", "processing"]);
-  if (updateError) throw new Error(updateError.message);
-
-  revalidatePath("/payouts");
-  return { payeeCount, totalAmount };
-}
-
 export async function createInfluencer({
   name,
   handle,
