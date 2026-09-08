@@ -314,6 +314,11 @@ export async function inviteAdminMember({
   });
   if (error) throw new Error(error.message);
 
+  const { error: inviteError } = await db.auth.admin.inviteUserByEmail(email, {
+    redirectTo: `https://${SITE_DOMAIN}/auth/callback`,
+  });
+  if (inviteError) throw new Error(`メンバーは登録されましたが、招待メールの送信に失敗しました: ${inviteError.message}`);
+
   revalidatePath("/settings");
 }
 

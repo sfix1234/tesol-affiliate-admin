@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/Sidebar";
-import { Topbar, TopbarUser } from "@/components/Topbar";
+import { Topbar } from "@/components/Topbar";
+import { TopbarUser } from "@/components/TopbarUser";
 import { fetchAdminMembers, fetchCourses, fetchOrgSettings } from "@/lib/queries";
 import { CommissionRatesForm, LpTrackingForm, NotificationSettingsForm, OrgInfoForm } from "./SettingsForms";
 import { InviteMemberButton } from "./InviteMemberModal";

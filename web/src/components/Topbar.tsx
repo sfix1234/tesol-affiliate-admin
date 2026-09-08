@@ -19,15 +19,3 @@ export function Topbar({
     </header>
   );
 }
-
-export function TopbarUser() {
-  return (
-    <div className="topbar-user">
-      <div className="topbar-avatar">運</div>
-      <div>
-        <b>運営 管理者</b>
-        <span>Owner</span>
-      </div>
-    </div>
-  );
-}

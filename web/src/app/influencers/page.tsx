@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
-import { Topbar, TopbarUser } from "@/components/Topbar";
+import { Topbar } from "@/components/Topbar";
+import { TopbarUser } from "@/components/TopbarUser";
 import { ArrowRightIcon, ChevronDownIcon, SearchIcon } from "@/components/icons";
 import { NewInfluencerButton } from "@/components/NewInfluencerModal";
 import { formatYen, statusBadgeClass, statusLabel } from "@/lib/data";

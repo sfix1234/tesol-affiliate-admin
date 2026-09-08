@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Topbar, TopbarUser } from "@/components/Topbar";
+import { Topbar } from "@/components/Topbar";
 import { CopyButton } from "@/components/CopyButton";
 import { NewLinkButton } from "@/components/NewLinkModal";
 import { CalendarIcon, ChevronDownIcon } from "@/components/icons";
@@ -52,11 +52,13 @@ export function LinksPageClient({
   recentConversions,
   courses,
   leads,
+  topbarUser,
 }: {
   influencers: Influencer[];
   recentConversions: Conversion[];
   courses: Course[];
   leads: Lead[];
+  topbarUser: ReactNode;
 }) {
   const getInfluencerById = (id: string) => influencers.find((i) => i.id === id);
   const coursesByKey = Object.fromEntries(courses.map((c) => [c.key, c]));
@@ -85,7 +87,7 @@ export function LinksPageClient({
       <Sidebar active="links" />
       <div className="main">
         <Topbar title="リンク管理・コンバージョン計測" subtitle="発行済みリンクの実績とコンバージョンログ">
-          <TopbarUser />
+          {topbarUser}
         </Topbar>
 
         <div className="content page-stack">
