@@ -3,16 +3,18 @@ import {
   GridIcon,
   UsersIcon,
   LinkIcon,
+  TargetIcon,
   WalletIcon,
   SettingsIcon,
 } from "./icons";
 
-type NavKey = "dashboard" | "influencers" | "links" | "payouts" | "settings";
+type NavKey = "dashboard" | "influencers" | "links" | "courses" | "payouts" | "settings";
 
 const mainNav: { key: NavKey; href: string; label: string; icon: typeof GridIcon }[] = [
   { key: "dashboard", href: "/", label: "ダッシュボード", icon: GridIcon },
   { key: "influencers", href: "/influencers", label: "インフルエンサー", icon: UsersIcon },
   { key: "links", href: "/links", label: "リンク管理", icon: LinkIcon },
+  { key: "courses", href: "/courses", label: "コース・遷移先LP", icon: TargetIcon },
 ];
 
 const opsNav: { key: NavKey; href: string; label: string; icon: typeof GridIcon }[] = [

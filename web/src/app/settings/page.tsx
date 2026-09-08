@@ -1,35 +1,24 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar } from "@/components/Topbar";
 import { TopbarUser } from "@/components/TopbarUser";
-import { fetchAdminMembers, fetchCourses, fetchOrgSettings } from "@/lib/queries";
-import { CommissionRatesForm, LpTrackingForm, NotificationSettingsForm, OrgInfoForm } from "./SettingsForms";
+import { fetchAdminMembers, fetchOrgSettings } from "@/lib/queries";
+import { NotificationSettingsForm, OrgInfoForm } from "./SettingsForms";
 import { InviteMemberButton } from "./InviteMemberModal";
-import { SITE_DOMAIN } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const [courses, adminMembers, orgSettings] = await Promise.all([
-    fetchCourses(),
-    fetchAdminMembers(),
-    fetchOrgSettings(),
-  ]);
+  const [adminMembers, orgSettings] = await Promise.all([fetchAdminMembers(), fetchOrgSettings()]);
   return (
     <div className="app">
       <Sidebar active="settings" />
       <div className="main">
-        <Topbar title="設定" subtitle="団体情報・手数料の初期値・通知・メンバー管理">
+        <Topbar title="設定" subtitle="団体情報・通知・メンバー管理">
           <TopbarUser />
         </Topbar>
 
         <div className="content page-stack">
           <OrgInfoForm settings={orgSettings} />
-          <CommissionRatesForm key={courses.map((c) => c.key).join(",")} courses={courses} />
-          <LpTrackingForm
-            key={courses.map((c) => c.key).join(",")}
-            courses={courses}
-            siteOrigin={`https://${SITE_DOMAIN}`}
-          />
           <NotificationSettingsForm settings={orgSettings} />
 
           <div className="card flush">

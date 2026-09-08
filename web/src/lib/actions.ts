@@ -196,7 +196,7 @@ export async function updateCourseRates(rates: { key: string; defaultRate: numbe
     const { error } = await db.from("courses").update({ default_rate: r.defaultRate }).eq("key", r.key);
     if (error) throw new Error(error.message);
   }
-  revalidatePath("/settings");
+  revalidatePath("/courses");
 }
 
 export async function updateCourseLpUrls(courses: { key: string; lpUrl: string }[]) {
@@ -205,7 +205,7 @@ export async function updateCourseLpUrls(courses: { key: string; lpUrl: string }
     const { error } = await db.from("courses").update({ lp_url: c.lpUrl }).eq("key", c.key);
     if (error) throw new Error(error.message);
   }
-  revalidatePath("/settings");
+  revalidatePath("/courses");
   revalidatePath("/links");
 }
 
@@ -245,7 +245,7 @@ export async function createCourse({
     if (ratesError) throw new Error(ratesError.message);
   }
 
-  revalidatePath("/settings");
+  revalidatePath("/courses");
   revalidatePath("/links");
   revalidatePath("/influencers");
 }
