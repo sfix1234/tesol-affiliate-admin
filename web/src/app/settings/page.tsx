@@ -23,8 +23,12 @@ export default async function SettingsPage() {
 
         <div className="content page-stack">
           <OrgInfoForm settings={orgSettings} />
-          <CommissionRatesForm courses={courses} />
-          <LpTrackingForm courses={courses} siteOrigin={`https://${SITE_DOMAIN}`} />
+          <CommissionRatesForm key={courses.map((c) => c.key).join(",")} courses={courses} />
+          <LpTrackingForm
+            key={courses.map((c) => c.key).join(",")}
+            courses={courses}
+            siteOrigin={`https://${SITE_DOMAIN}`}
+          />
           <NotificationSettingsForm settings={orgSettings} />
 
           <div className="card flush">

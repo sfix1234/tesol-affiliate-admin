@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PlusIcon } from "./icons";
 import { createInfluencer } from "@/lib/actions";
+import type { Course } from "@/lib/data";
 
-const emptyForm = {
+const emptyBaseForm = {
   name: "",
   handle: "",
   channel: "",
@@ -13,27 +14,28 @@ const emptyForm = {
   email: "",
   followers: "",
   payoutMethod: "銀行振込",
-  rateTesol: 10,
-  rateIelts: 10,
-  rateBundle: 10,
 };
 
-export function NewInfluencerButton() {
+export function NewInfluencerButton({ courses }: { courses: Course[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState(emptyBaseForm);
+  const [rates, setRates] = useState<Record<string, number>>(
+    Object.fromEntries(courses.map((c) => [c.key, c.defaultRate]))
+  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
   function close() {
     setOpen(false);
-    setForm(emptyForm);
+    setForm(emptyBaseForm);
+    setRates(Object.fromEntries(courses.map((c) => [c.key, c.defaultRate])));
     setError(null);
     setDone(false);
   }
 
-  function set<K extends keyof typeof emptyForm>(key: K, value: (typeof emptyForm)[K]) {
+  function set<K extends keyof typeof emptyBaseForm>(key: K, value: (typeof emptyBaseForm)[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -50,7 +52,7 @@ export function NewInfluencerButton() {
         email: form.email,
         followers: form.followers,
         payoutMethod: form.payoutMethod,
-        rates: { tesol: form.rateTesol, ielts: form.rateIelts, bundle: form.rateBundle },
+        rates,
       });
       setDone(true);
       router.refresh();
@@ -114,37 +116,21 @@ export function NewInfluencerButton() {
                     支払方法
                     <input value={form.payoutMethod} onChange={(e) => set("payoutMethod", e.target.value)} />
                   </label>
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <label style={{ flex: 1 }}>
-                      TESOL手数料率(%)
-                      <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={form.rateTesol}
-                        onChange={(e) => set("rateTesol", Number(e.target.value))}
-                      />
-                    </label>
-                    <label style={{ flex: 1 }}>
-                      IELTS手数料率(%)
-                      <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={form.rateIelts}
-                        onChange={(e) => set("rateIelts", Number(e.target.value))}
-                      />
-                    </label>
-                    <label style={{ flex: 1 }}>
-                      セット手数料率(%)
-                      <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={form.rateBundle}
-                        onChange={(e) => set("rateBundle", Number(e.target.value))}
-                      />
-                    </label>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    {courses.map((c) => (
+                      <label key={c.key} style={{ flex: 1, minWidth: 100 }}>
+                        {c.name}手数料率(%)
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={rates[c.key] ?? 0}
+                          onChange={(e) =>
+                            setRates((prev) => ({ ...prev, [c.key]: Number(e.target.value) }))
+                          }
+                        />
+                      </label>
+                    ))}
                   </div>
                   {error && <p style={{ color: "var(--danger, #c0392b)", fontSize: 12.5, margin: 0 }}>{error}</p>}
                   <div className="modal-actions">

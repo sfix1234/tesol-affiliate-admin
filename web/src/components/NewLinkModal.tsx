@@ -10,6 +10,7 @@ type CreatedLink = {
   id: string;
   shortUrl: string;
   landingPage: string;
+  courseKey: string;
   createdAt: string;
   clicks: number;
   conversions: number;

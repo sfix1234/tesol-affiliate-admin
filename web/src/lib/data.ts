@@ -52,7 +52,7 @@ export type Influencer = {
   payoutMethod: string;
   joinedAt: string;
   status: InfluencerStatus;
-  rates: { tesol: number; ielts: number; bundle: number };
+  rates: Record<string, number>;
   totals: {
     clicks: number;
     conversions: number;
@@ -65,6 +65,7 @@ export type Influencer = {
     id: string;
     shortUrl: string;
     landingPage: string;
+    courseKey: string;
     createdAt: string;
     clicks: number;
     conversions: number;

@@ -160,7 +160,7 @@ export function RatesEditor({ inf, courses }: { inf: Influencer; courses: Course
         </thead>
         <tbody>
           {courses.map((course) => {
-            const rate = rates[course.key as keyof typeof rates];
+            const rate = rates[course.key] ?? 0;
             const reward = Math.round((course.price * rate) / 100);
             return (
               <tr key={course.key}>

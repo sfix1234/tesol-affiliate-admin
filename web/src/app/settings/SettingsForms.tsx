@@ -3,7 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Toggle } from "@/components/Toggle";
+import { PlusIcon } from "@/components/icons";
 import {
+  createCourse,
   updateCourseLpUrls,
   updateCourseRates,
   updateNotificationSettings,
@@ -77,6 +79,13 @@ export function CommissionRatesForm({ courses }: { courses: Course[] }) {
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newPrice, setNewPrice] = useState(0);
+  const [newRate, setNewRate] = useState(10);
+  const [addSubmitting, setAddSubmitting] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setPending(true);
@@ -90,11 +99,44 @@ export function CommissionRatesForm({ courses }: { courses: Course[] }) {
     }
   }
 
+  function closeAdd() {
+    setAddOpen(false);
+    setNewName("");
+    setNewPrice(0);
+    setNewRate(10);
+    setAddError(null);
+  }
+
+  async function handleAddCourse() {
+    if (!newName.trim()) {
+      setAddError("コース名は必須です");
+      return;
+    }
+    setAddSubmitting(true);
+    setAddError(null);
+    try {
+      await createCourse({ name: newName, price: newPrice, defaultRate: newRate });
+      closeAdd();
+      router.refresh();
+    } catch {
+      setAddError("コースの追加に失敗しました");
+    } finally {
+      setAddSubmitting(false);
+    }
+  }
+
   return (
+    <>
     <form onSubmit={handleSubmit} className="card">
       <div className="card-head">
-        <h2>デフォルト手数料率</h2>
-        <span>新規インフルエンサー登録時の初期値</span>
+        <div>
+          <h2>デフォルト手数料率</h2>
+          <span>新規インフルエンサー登録時の初期値</span>
+        </div>
+        <button type="button" className="btn ghost" onClick={() => setAddOpen(true)}>
+          <PlusIcon />
+          コースを追加
+        </button>
       </div>
       <table>
         <thead>
@@ -132,6 +174,38 @@ export function CommissionRatesForm({ courses }: { courses: Course[] }) {
         <SaveButton pending={pending} saved={saved} />
       </div>
     </form>
+
+    {addOpen && (
+      <div className="modal-overlay" onClick={closeAdd}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <h3>コースを追加</h3>
+          <div className="modal-form">
+            <label>
+              コース名
+              <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="例: 発音矯正コース" />
+            </label>
+            <label>
+              コース単価
+              <input type="number" min={0} value={newPrice} onChange={(e) => setNewPrice(Number(e.target.value))} />
+            </label>
+            <label>
+              デフォルト手数料率(%)
+              <input type="number" min={0} max={100} value={newRate} onChange={(e) => setNewRate(Number(e.target.value))} />
+            </label>
+            {addError && <p style={{ color: "var(--danger, #c0392b)", fontSize: 12.5, margin: 0 }}>{addError}</p>}
+            <div className="modal-actions">
+              <button type="button" className="btn ghost" onClick={closeAdd}>
+                キャンセル
+              </button>
+              <button type="button" className="btn primary" onClick={handleAddCourse} disabled={addSubmitting}>
+                {addSubmitting ? "追加中..." : "追加する"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 

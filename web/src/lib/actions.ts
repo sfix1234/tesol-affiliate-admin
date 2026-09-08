@@ -68,6 +68,7 @@ export async function createAffiliateLink({
     id: link.id,
     shortUrl: link.short_url,
     landingPage: link.landing_page,
+    courseKey: link.course_key,
     createdAt: link.created_at,
     clicks: link.clicks,
     conversions: link.conversions,
@@ -208,6 +209,47 @@ export async function updateCourseLpUrls(courses: { key: string; lpUrl: string }
   revalidatePath("/links");
 }
 
+export async function createCourse({
+  name,
+  price,
+  defaultRate,
+}: {
+  name: string;
+  price: number;
+  defaultRate: number;
+}) {
+  if (!name.trim()) throw new Error("コース名は必須です");
+  const db = supabaseAdmin();
+  const base = slugify(name) || "course";
+  let key = base;
+  const { data: existing } = await db.from("courses").select("key").like("key", `${base}%`);
+  if (existing?.some((c) => c.key === key)) {
+    key = `${base}-${Math.random().toString(36).slice(2, 5)}`;
+  }
+
+  const { error } = await db.from("courses").insert({
+    key,
+    name,
+    price,
+    default_rate: defaultRate,
+    lp_url: "",
+  });
+  if (error) throw new Error(error.message);
+
+  const { data: influencers, error: infError } = await db.from("influencers").select("id");
+  if (infError) throw new Error(infError.message);
+  if (influencers && influencers.length > 0) {
+    const { error: ratesError } = await db.from("influencer_course_rates").insert(
+      influencers.map((inf) => ({ influencer_id: inf.id, course_key: key, rate: defaultRate }))
+    );
+    if (ratesError) throw new Error(ratesError.message);
+  }
+
+  revalidatePath("/settings");
+  revalidatePath("/links");
+  revalidatePath("/influencers");
+}
+
 export async function updateInfluencerProfile({
   id,
   email,
@@ -238,13 +280,15 @@ export async function updateInfluencerRates({
   rates,
 }: {
   id: string;
-  rates: { tesol: number; ielts: number; bundle: number };
+  rates: Record<string, number>;
 }) {
   const db = supabaseAdmin();
   const { error } = await db
-    .from("influencers")
-    .update({ rate_tesol: rates.tesol, rate_ielts: rates.ielts, rate_bundle: rates.bundle })
-    .eq("id", id);
+    .from("influencer_course_rates")
+    .upsert(
+      Object.entries(rates).map(([courseKey, rate]) => ({ influencer_id: id, course_key: courseKey, rate })),
+      { onConflict: "influencer_id,course_key" }
+    );
   if (error) throw new Error(error.message);
 
   revalidatePath(`/influencers/${id}`);
@@ -325,7 +369,7 @@ export async function createInfluencer({
   email: string;
   followers: string;
   payoutMethod: string;
-  rates: { tesol: number; ielts: number; bundle: number };
+  rates: Record<string, number>;
 }) {
   if (!name.trim() || !email.trim()) throw new Error("名前とメールアドレスは必須です");
 
@@ -346,13 +390,15 @@ export async function createInfluencer({
     payout_method: payoutMethod || "銀行振込",
     joined_at: new Date().toISOString().slice(0, 10),
     status: "pending" as const,
-    rate_tesol: rates.tesol,
-    rate_ielts: rates.ielts,
-    rate_bundle: rates.bundle,
   };
 
   const { error } = await db.from("influencers").insert(row);
   if (error) throw new Error(error.message);
+
+  const { error: ratesError } = await db.from("influencer_course_rates").insert(
+    Object.entries(rates).map(([courseKey, rate]) => ({ influencer_id: id, course_key: courseKey, rate }))
+  );
+  if (ratesError) throw new Error(ratesError.message);
 
   const { error: payoutError } = await db.from("payout_queue").insert({
     influencer_id: id,

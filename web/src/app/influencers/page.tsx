@@ -4,12 +4,12 @@ import { Topbar, TopbarUser } from "@/components/Topbar";
 import { ArrowRightIcon, ChevronDownIcon, SearchIcon } from "@/components/icons";
 import { NewInfluencerButton } from "@/components/NewInfluencerModal";
 import { formatYen, statusBadgeClass, statusLabel } from "@/lib/data";
-import { fetchInfluencers } from "@/lib/queries";
+import { fetchCourses, fetchInfluencers } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function InfluencersPage() {
-  const influencers = await fetchInfluencers();
+  const [influencers, courses] = await Promise.all([fetchInfluencers(), fetchCourses()]);
   return (
     <div className="app">
       <Sidebar active="influencers" />
@@ -34,7 +34,7 @@ export default async function InfluencersPage() {
                 <ChevronDownIcon width={13} height={13} />
               </div>
             </div>
-            <NewInfluencerButton />
+            <NewInfluencerButton key={courses.map((c) => c.key).join(",")} courses={courses} />
           </div>
 
           <div className="card flush">
@@ -43,7 +43,7 @@ export default async function InfluencersPage() {
                 <tr>
                   <th>インフルエンサー</th>
                   <th>カテゴリ</th>
-                  <th>手数料率(TESOL / IELTS)</th>
+                  <th>手数料率</th>
                   <th>累計CV数</th>
                   <th>累計報酬額</th>
                   <th>ステータス</th>
@@ -70,7 +70,7 @@ export default async function InfluencersPage() {
                     <td>
                       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <b style={{ fontSize: 12.5, fontWeight: 700 }}>
-                          {inf.rates.tesol}% / {inf.rates.ielts}%
+                          {courses.map((c) => `${c.name} ${inf.rates[c.key] ?? 0}%`).join(" / ")}
                         </b>
                         <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
                           コース単価連動

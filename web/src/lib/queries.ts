@@ -16,15 +16,21 @@ export async function fetchCourses(): Promise<Course[]> {
 
 export async function fetchInfluencers(): Promise<Influencer[]> {
   const db = supabaseAdmin();
-  const [{ data: influencers, error: infError }, { data: rewards, error: rewardsError }, { data: links, error: linksError }] =
-    await Promise.all([
-      db.from("influencers").select("*").order("total_reward", { ascending: false }),
-      db.from("influencer_monthly_rewards").select("*").order("sort_order"),
-      db.from("affiliate_links").select("*").order("created_at"),
-    ]);
+  const [
+    { data: influencers, error: infError },
+    { data: rewards, error: rewardsError },
+    { data: links, error: linksError },
+    { data: rates, error: ratesError },
+  ] = await Promise.all([
+    db.from("influencers").select("*").order("total_reward", { ascending: false }),
+    db.from("influencer_monthly_rewards").select("*").order("sort_order"),
+    db.from("affiliate_links").select("*").order("created_at"),
+    db.from("influencer_course_rates").select("*"),
+  ]);
   if (infError) throw infError;
   if (rewardsError) throw rewardsError;
   if (linksError) throw linksError;
+  if (ratesError) throw ratesError;
 
   return (influencers ?? []).map((row): Influencer => ({
     id: row.id,
@@ -39,7 +45,9 @@ export async function fetchInfluencers(): Promise<Influencer[]> {
     payoutMethod: row.payout_method,
     joinedAt: row.joined_at,
     status: row.status,
-    rates: { tesol: row.rate_tesol, ielts: row.rate_ielts, bundle: row.rate_bundle },
+    rates: Object.fromEntries(
+      (rates ?? []).filter((r) => r.influencer_id === row.id).map((r) => [r.course_key, r.rate])
+    ),
     totals: {
       clicks: row.total_clicks,
       conversions: row.total_conversions,
@@ -56,6 +64,7 @@ export async function fetchInfluencers(): Promise<Influencer[]> {
         id: l.id,
         shortUrl: l.short_url,
         landingPage: l.landing_page,
+        courseKey: l.course_key,
         createdAt: l.created_at,
         clicks: l.clicks,
         conversions: l.conversions,

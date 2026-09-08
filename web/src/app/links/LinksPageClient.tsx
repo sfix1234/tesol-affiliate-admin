@@ -21,6 +21,7 @@ type LinkRow = {
   id: string;
   shortUrl: string;
   landingPage: string;
+  courseKey: string;
   createdAt: string;
   clicks: number;
   conversions: number;
@@ -30,23 +31,18 @@ type LinkRow = {
   active: boolean;
 };
 
-function courseAveragePrice(landingPage: string) {
-  if (landingPage.includes("IELTS") && landingPage.includes("TESOL")) return 38000;
-  if (landingPage.includes("IELTS")) return 18500;
-  return 24000;
-}
-
 function toRow(
-  link: { id: string; shortUrl: string; landingPage: string; createdAt: string; clicks: number; conversions: number },
-  inf: Influencer
+  link: { id: string; shortUrl: string; landingPage: string; courseKey: string; createdAt: string; clicks: number; conversions: number },
+  inf: Influencer,
+  coursesByKey: Record<string, Course>
 ): LinkRow {
+  const course = coursesByKey[link.courseKey];
+  const rate = inf.rates[link.courseKey] ?? 0;
   return {
     ...link,
     influencer: inf,
     cvr: link.clicks > 0 ? (link.conversions / link.clicks) * 100 : 0,
-    reward: Math.round(
-      (link.conversions * (courseAveragePrice(link.landingPage) * (inf.rates.tesol / 100 + inf.rates.ielts / 100))) / 2
-    ),
+    reward: course ? Math.round(link.conversions * course.price * (rate / 100)) : 0,
     active: inf.status !== "suspended",
   };
 }
@@ -63,7 +59,8 @@ export function LinksPageClient({
   leads: Lead[];
 }) {
   const getInfluencerById = (id: string) => influencers.find((i) => i.id === id);
-  const baseLinks: LinkRow[] = influencers.flatMap((inf) => inf.links.map((link) => toRow(link, inf)));
+  const coursesByKey = Object.fromEntries(courses.map((c) => [c.key, c]));
+  const baseLinks: LinkRow[] = influencers.flatMap((inf) => inf.links.map((link) => toRow(link, inf, coursesByKey)));
   const [extraLinks, setExtraLinks] = useState<LinkRow[]>([]);
 
   const allLinks = useMemo(() => [...extraLinks, ...baseLinks], [extraLinks, baseLinks]);
@@ -72,6 +69,7 @@ export function LinksPageClient({
     id: string;
     shortUrl: string;
     landingPage: string;
+    courseKey: string;
     createdAt: string;
     clicks: number;
     conversions: number;
@@ -79,7 +77,7 @@ export function LinksPageClient({
   }) {
     const inf = getInfluencerById(link.influencerId);
     if (!inf) return;
-    setExtraLinks((prev) => [toRow(link, inf), ...prev]);
+    setExtraLinks((prev) => [toRow(link, inf, coursesByKey), ...prev]);
   }
 
   return (
