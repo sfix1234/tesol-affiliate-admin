@@ -94,14 +94,14 @@ export async function fetchRecentConversions(): Promise<Conversion[]> {
 }
 
 export async function fetchDailyConversionTrend(days = 14): Promise<{ x: string; v: number }[]> {
-  const since = new Date();
-  since.setDate(since.getDate() - (days - 1));
-  since.setHours(0, 0, 0, 0);
+  const now = new Date();
+  const todayUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const sinceUTC = todayUTC - (days - 1) * 86400000;
 
   const { data, error } = await supabaseAdmin()
     .from("conversions")
     .select("occurred_at")
-    .gte("occurred_at", since.toISOString());
+    .gte("occurred_at", new Date(sinceUTC).toISOString());
   if (error) throw error;
 
   const countsByDate = new Map<string, number>();
@@ -112,10 +112,9 @@ export async function fetchDailyConversionTrend(days = 14): Promise<{ x: string;
 
   const result: { x: string; v: number }[] = [];
   for (let i = 0; i < days; i++) {
-    const d = new Date(since);
-    d.setDate(since.getDate() + i);
+    const d = new Date(sinceUTC + i * 86400000);
     const dateKey = d.toISOString().slice(0, 10);
-    result.push({ x: `${d.getMonth() + 1}/${d.getDate()}`, v: countsByDate.get(dateKey) ?? 0 });
+    result.push({ x: `${d.getUTCMonth() + 1}/${d.getUTCDate()}`, v: countsByDate.get(dateKey) ?? 0 });
   }
   return result;
 }
