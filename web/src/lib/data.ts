@@ -152,22 +152,3 @@ export type AdminMember = {
   status: "有効" | "招待中";
 };
 
-/* ---------- Dashboard (not yet backed by the database) ---------- */
-
-export const dashboardKpis = {
-  totalClicks: 12480,
-  totalClicksTrend: 8.2,
-  totalConversions: 342,
-  totalConversionsTrend: 14.5,
-  cvr: 2.74,
-  cvrTrend: 0.3,
-  monthReward: 1284600,
-  monthRewardTrend: 18.1,
-};
-
-export const clickTrend = [
-  { x: "8/9", v: 65 }, { x: "8/10", v: 79 }, { x: "8/11", v: 54 }, { x: "8/12", v: 108 },
-  { x: "8/13", v: 94 }, { x: "8/14", v: 122 }, { x: "8/15", v: 144 }, { x: "8/16", v: 101 },
-  { x: "8/17", v: 115 }, { x: "8/18", v: 162 }, { x: "8/19", v: 137 }, { x: "8/20", v: 180 },
-  { x: "8/21", v: 151 }, { x: "8/22", v: 173 },
-];

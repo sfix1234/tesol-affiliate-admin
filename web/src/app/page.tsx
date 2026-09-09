@@ -11,8 +11,8 @@ import {
   TrendUpIcon,
   WalletIcon,
 } from "@/components/icons";
-import { clickTrend, formatYen } from "@/lib/data";
-import { fetchInfluencers, fetchRecentConversions } from "@/lib/queries";
+import { formatYen } from "@/lib/data";
+import { fetchDailyConversionTrend, fetchInfluencers, fetchRecentConversions } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -23,11 +23,13 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ month?: string }>;
 }) {
-  const [influencers, recentConversions, { month: monthParam }] = await Promise.all([
+  const [influencers, recentConversions, clickTrend, { month: monthParam }] = await Promise.all([
     fetchInfluencers(),
     fetchRecentConversions(),
+    fetchDailyConversionTrend(14),
     searchParams,
   ]);
+  const trendMax = Math.max(...clickTrend.map((d) => d.v), 1);
 
   const months = Array.from(
     new Set(influencers.flatMap((inf) => inf.monthlyRewards.map((m) => m.label.replace("月", ""))))
@@ -125,14 +127,15 @@ export default async function DashboardPage({
             <div className="card">
               <div className="card-head">
                 <h2>コンバージョン推移(過去14日)</h2>
-                <span>クリック数・CV数</span>
+                <span>日別CV数</span>
               </div>
               <div className="chart-wrap">
                 {clickTrend.map((d, i) => (
                   <div className="bar-col" key={d.x}>
                     <div
                       className={`bar${i % 3 === 0 && i % 6 !== 0 ? " alt" : ""}`}
-                      style={{ height: `${Math.round((d.v / 50) * CHART_MAX)}px` }}
+                      style={{ height: `${Math.max(2, Math.round((d.v / trendMax) * CHART_MAX))}px` }}
+                      title={`${d.x}: ${d.v}件`}
                     />
                     <div className="bar-x">{d.x}</div>
                   </div>

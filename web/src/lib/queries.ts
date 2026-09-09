@@ -93,6 +93,33 @@ export async function fetchRecentConversions(): Promise<Conversion[]> {
   }));
 }
 
+export async function fetchDailyConversionTrend(days = 14): Promise<{ x: string; v: number }[]> {
+  const since = new Date();
+  since.setDate(since.getDate() - (days - 1));
+  since.setHours(0, 0, 0, 0);
+
+  const { data, error } = await supabaseAdmin()
+    .from("conversions")
+    .select("occurred_at")
+    .gte("occurred_at", since.toISOString());
+  if (error) throw error;
+
+  const countsByDate = new Map<string, number>();
+  for (const row of data ?? []) {
+    const dateKey = row.occurred_at.slice(0, 10);
+    countsByDate.set(dateKey, (countsByDate.get(dateKey) ?? 0) + 1);
+  }
+
+  const result: { x: string; v: number }[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(since);
+    d.setDate(since.getDate() + i);
+    const dateKey = d.toISOString().slice(0, 10);
+    result.push({ x: `${d.getMonth() + 1}/${d.getDate()}`, v: countsByDate.get(dateKey) ?? 0 });
+  }
+  return result;
+}
+
 export async function fetchPayoutQueue(): Promise<PayoutQueueItem[]> {
   const { data, error } = await supabaseAdmin()
     .from("payout_queue")
